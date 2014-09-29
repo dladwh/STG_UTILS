@@ -1,0 +1,53 @@
+/**********************************************************************
+-- Product                   : Oracle Warehouse Builder 
+-- Generator Version         : 11.2.0.4.0
+-- Created Date              : Thu Sep 25 18:47:41 ART 2014
+-- Modified Date             : Thu Sep 25 18:47:41 ART 2014
+-- Created By                : owb11204_idesa
+-- Modified By               : owb11204_idesa
+-- Generated Object Type     : LIBRARY
+-- Generated Object Name     : PACK_STG_UTILS
+-- Comments                  : 
+-- Copyright (c) 2000, 2013, Oracle. All rights reserved. 
+**********************************************************************/
+
+
+CREATE OR REPLACE PACKAGE "PACK_STG_UTILS"  IS 
+ 
+FUNCTION "FN_TRAILER_CHECK"("P_TABLE_NAME" IN VARCHAR2,  "P_CANT_FILAS" IN NUMBER) RETURN BOOLEAN;
+ 
+END "PACK_STG_UTILS";
+
+/
+ 
+CREATE OR REPLACE PACKAGE BODY "PACK_STG_UTILS" AS 
+ 
+FUNCTION "FN_TRAILER_CHECK"("P_TABLE_NAME" IN VARCHAR2,  "P_CANT_FILAS" IN NUMBER) RETURN BOOLEAN IS 
+  sql_stmt    VARCHAR2(200);
+  v_cantidad_filas_ext_table  number;
+
+BEGIN
+    sql_stmt := 'select count(*) from ' || P_TABLE_NAME;
+    execute immediate sql_stmt
+    into v_cantidad_filas_ext_table
+    --using P_TABLE_NAME
+    ;
+
+    if (v_cantidad_filas_ext_table != P_CANT_FILAS) then
+      RAISE_APPLICATION_ERROR(-20001,'ERR cantidad de registros');
+    end if;
+
+    RETURN TRUE;
+
+    EXCEPTION
+        WHEN OTHERS THEN 
+            RAISE_APPLICATION_ERROR(-20002,'FATAL ERR cantidad de registros');
+            RETURN FALSE;
+    RETURN NULL;
+END;
+-- End of FN_TRAILER_CHECK;
+ 
+END "PACK_STG_UTILS";
+
+/
+
